@@ -1,0 +1,115 @@
+.form-control-user {
+    border-radius: 10rem;
+    padding: 0.8rem 1rem;
+    font-size: 0.8rem;
+    height: calc(1.5em + 1.6rem);
+    line-height: 1.5;
+}
+
+.input-group {
+    align-items: stretch;
+}
+
+.input-group .form-control {
+    height: calc(1.5em + 1.6rem);
+}
+
+.input-group input.form-control-user {
+    border-top-right-radius: 0;
+    border-bottom-right-radius: 0;
+}
+
+select.form-control,
+select.form-control-user {
+    height: calc(1.5em + 1.6rem) !important;
+    padding: 0 1rem !important;
+    font-size: 0.8rem;
+    border-radius: 10rem;
+    color: #6e707e;
+    background-color: #fff;
+    border: 1px solid #d1d3e2;
+    -webkit-appearance: auto !important;
+    -moz-appearance: auto !important;
+    appearance: auto !important;
+}
+
+.input-group-append {
+    display: flex;
+}
+
+.input-group-append select.form-control {
+    height: 100% !important;
+    border-top-left-radius: 0;
+    border-bottom-left-radius: 0;
+    border-top-right-radius: 10rem;
+    border-bottom-right-radius: 10rem;
+    border-left: 0;
+}
+
+select option {
+    color: #6e707e;
+    padding: 8px;
+    font-size: 0.8rem;
+}
+
+select.form-control:hover,
+select.form-control-user:hover,
+select.form-control:focus,
+select.form-control-user:focus {
+    background-color: #f8f9fc;
+    cursor: pointer;
+}
+
+.markup-high {
+    color: #e74a3b;
+}
+
+.markup-normal {
+    color: #1cc88a;
+}
+
+.result-item {
+    margin-bottom: 1rem;
+    padding: 1rem;
+    border-radius: 0.35rem;
+    background-color: #f8f9fc;
+    border-left: 0.25rem solid #4e73df;
+    transition: all 0.3s ease;
+}
+
+.result-item:hover {
+    transform: translateX(5px);
+    box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
+}
+
+.result-label {
+    color: #4e73df;
+    font-weight: 600;
+    margin-bottom: 0.25rem;
+    font-size: 0.8rem;
+    text-transform: uppercase;
+}
+
+.result-value {
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: #5a5c69;
+}
+
+.btn-user {
+    font-size: 0.8rem;
+    border-radius: 10rem;
+    padding: 0.75rem 1rem;
+}
+
+.bg-gradient-primary {
+    background-color: #4e73df;
+    background-image: linear-gradient(180deg, #4e73df 10%, #224abe 100%);
+    background-size: cover;
+}
+
+select.form-control-user option {
+    color: #000;
+    background: #fff;
+    padding: 8px;
+} 

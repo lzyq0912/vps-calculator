@@ -1,1 +1,13 @@
- 
+version: '3'
+
+services:
+  app:
+    build: .
+    ports:
+      - "20000:20000"
+    environment:
+      - EXCHANGE_API_KEY=${EXCHANGE_API_KEY}
+      - FLASK_ENV=development
+      - FLASK_DEBUG=1
+      - PYTHONUNBUFFERED=1
+    restart: "no"  # 暂时关闭自动重启以便调试

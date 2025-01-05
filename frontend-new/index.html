@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>VPS剩余价值计算器</title>
+
+    <!-- Custom fonts -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css?family=Nunito:200,200i,300,300i,400,400i,600,600i,700,700i,800,800i,900,900i" rel="stylesheet">
+
+    <!-- Custom styles -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.3/css/sb-admin-2.min.css" rel="stylesheet">
+    <link href="assets/css/custom.css" rel="stylesheet">
+
+    <!-- 添加动态背景相关样式 -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/animate.css/4.1.1/animate.min.css">
+    <link href="assets/css/background.css" rel="stylesheet">
+
+    <!-- 使用更可靠的看板娘实现 -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/font-awesome/css/font-awesome.min.css">
+    <script src="https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js"></script>
+    <script>
+        // 看板娘配置
+        localStorage.setItem('waifu-display', '');
+        sessionStorage.setItem('waifu-text', '');
+        
+        // 自定义看板娘配置
+        window.live2d_settings = {
+            modelId: 1,                  // 默认模型ID
+            modelTexturesId: 87,         // 默认材质ID
+            modelStorage: false,         // 不储存模型ID
+            waifuSize: '280x250',       // 看板娘大小
+            waifuTipsSize: '250x70',    // 提示框大小
+            waifuFontSize: '12px',      // 提示框字体
+            waifuToolFont: '14px',      // 工具栏字体
+            waifuToolLine: '20px',      // 工具栏行高
+            waifuToolTop: '0px',        // 工具栏顶部边距
+            waifuMinWidth: '768px',     // 面页小于 指定宽度 隐藏看板娘，例如 'disable'(禁用), '768px'
+            waifuEdgeSide: 'right:30',  // 看板娘贴边方向
+            waifuDraggable: 'unlimited', // 拖拽样式
+            waifuDraggableRevert: true, // 松开鼠标还原拖拽位置
+            homePageUrl: '/',           // 主页地址，可选 'auto'(自动), '{URL 网址}'
+            aboutPageUrl: 'https://github.com/stevenjoezhang/live2d-widget', // 关于页地址, '{URL 网址}'
+            screenshotCapture: true,    // 开启看板娘截图
+            initModel: 'https://cdn.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/waifu.json',
+            defaultModel: true
+        };
+    </script>
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+</head>
+
+<body class="bg-gradient-primary">
+    <!-- 背景容器 -->
+    <div class="background-container">
+        <div class="background-overlay"></div>
+    </div>
+    <div id="vanta-bg" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -2;"></div>
+
+    <!-- 添加汇率显示 -->
+    <div class="exchange-rates-panel">
+        <div class="exchange-rates-content">
+            <h6 class="text-white">实时汇率</h6>
+            <div id="exchangeRates" class="rates-container">
+                <div class="rate-item">
+                    <span class="currency">USD/CNY:</span>
+                    <span class="value" id="usdRate">loading...</span>
+                </div>
+                <div class="rate-item">
+                    <span class="currency">EUR/CNY:</span>
+                    <span class="value" id="eurRate">loading...</span>
+                </div>
+            </div>
+            <div class="update-time" id="updateTime">更新时间: loading...</div>
+        </div>
+    </div>
+
+    <!-- 原有的body内容，添加透明度控制 -->
+    <div class="opacity-control">
+        <input type="range" id="opacityControl" min="0" max="100" value="95">
+    </div>
+
+    <div class="container">
+        <div class="row justify-content-center">
+            <div class="col-xl-10 col-lg-12 col-md-9">
+                <div class="card o-hidden border-0 shadow-lg my-5">
+                    <div class="card-body p-0">
+                        <div class="p-5">
+                            <div class="text-center">
+                                <h1 class="h4 text-gray-900 mb-4">VPS剩余价值计算器</h1>
+                            </div>
+                            
+                            <!-- Calculator Form -->
+                            <form id="calculatorForm" class="user">
+                                <div class="row">
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="small mb-1">购买价格</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control form-control-user" id="price" required step="0.01" placeholder="输入购买价格" style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                                                <div class="input-group-append">
+                                                    <select class="form-control" id="currency" style="height: 100%; border-top-right-radius: 10rem; border-bottom-right-radius: 10rem;">
+                                                        <option value="CNY">CNY</option>
+                                                        <option value="USD">USD</option>
+                                                        <option value="EUR">EUR</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-6">
+                                        <div class="form-group">
+                                            <label class="small mb-1">出售价格</label>
+                                            <div class="input-group">
+                                                <input type="number" class="form-control form-control-user" id="sellingPrice" required step="0.01" placeholder="输入出售价格" style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
+                                                <div class="input-group-append">
+                                                    <select class="form-control" id="sellingCurrency" style="height: 100%; border-top-right-radius: 10rem; border-bottom-right-radius: 10rem;">
+                                                        <option value="CNY">CNY</option>
+                                                        <option value="USD">USD</option>
+                                                        <option value="EUR">EUR</option>
+                                                    </select>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="row">
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="small mb-1">付费类型</label>
+                                            <select class="form-control" id="paymentType">
+                                                <option value="monthly">月付</option>
+                                                <option value="quarterly">季付</option>
+                                                <option value="yearly">年付</option>
+                                                <option value="threeYears">三年付</option>
+                                            </select>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="small mb-1">开始日期</label>
+                                            <input type="date" class="form-control form-control-user" id="startDate" required>
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4">
+                                        <div class="form-group">
+                                            <label class="small mb-1">结束日期</label>
+                                            <input type="date" class="form-control form-control-user" id="endDate" required>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="submit" class="btn btn-primary btn-user btn-block">
+                                    计算剩余价值
+                                </button>
+                            </form>
+
+                            <!-- Results -->
+                            <div id="resultCard" class="mt-4" style="display: none;">
+                                <div class="text-center">
+                                    <h1 class="h5 text-gray-900 mb-4">计算结果</h1>
+                                </div>
+                                <div id="result"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Scripts -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/4.6.0/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/startbootstrap-sb-admin-2/4.1.3/js/sb-admin-2.min.js"></script>
+    <script src="assets/js/config.js"></script>
+    <script src="assets/js/api.js"></script>
+    <script src="assets/js/calculator.js"></script>
+    <script src="assets/js/background.js"></script>
+
+    <!-- 访问统计 -->
+    <div class="visit-stats">
+        <div class="visit-stats-content">
+            <div>
+                <i class="fas fa-chart-line visit-icon"></i>
+                总访问量：<span class="visit-count" id="busuanzi_value_site_pv">--</span>
+            </div>
+            <div>
+                <i class="fas fa-user visit-icon"></i>
+                访问人数：<span class="visit-count" id="busuanzi_value_site_uv">--</span>
+            </div>
+        </div>
+    </div>
+</body>
+</html> 

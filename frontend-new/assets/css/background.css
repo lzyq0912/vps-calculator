@@ -1,0 +1,280 @@
+.background-container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    background-size: cover !important;
+    background-position: center center !important;
+    image-rendering: -webkit-optimize-contrast;
+    transform: translateZ(0);
+    will-change: transform;
+    transition: opacity 1.5s ease-in-out;
+}
+
+/* 背景包装器，用于防止露出底色 */
+.background-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    background: #4e73df; /* 与底色相同，但不会被看到 */
+}
+
+/* 确保两个背景层都有相同的样式 */
+.background-container.prev,
+.background-container.next {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+}
+
+.background-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+        45deg,
+        rgba(66, 66, 255, 0.1),
+        rgba(255, 66, 255, 0.1)
+    );
+}
+
+#bgVideo {
+    position: absolute;
+    right: 0;
+    bottom: 0;
+    min-width: 100%;
+    min-height: 100%;
+    width: auto;
+    height: auto;
+    z-index: 0;
+    object-fit: cover;
+}
+
+.opacity-control {
+    position: fixed;
+    bottom: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 12px;
+    border-radius: 20px;
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+    transition: all 0.3s ease;
+}
+
+.opacity-control:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.opacity-control input[type="range"] {
+    width: 100px;
+}
+
+/* 调整卡片透明度 */
+.card {
+    background-color: rgba(255, 255, 255, 0.9);
+    backdrop-filter: blur(5px);
+    transition: background-color 0.3s ease;
+}
+
+/* 现代化的输入框样式 */
+.form-control {
+    transition: all 0.3s ease;
+}
+
+.form-control:focus {
+    box-shadow: 0 0 15px rgba(78, 115, 223, 0.3);
+    transform: translateY(-1px);
+}
+
+/* 动画效果 */
+.result-item {
+    animation: fadeInUp 0.5s ease;
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* 汇率显示面板样式 */
+.exchange-rates-panel {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 15px;
+    border-radius: 15px;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+.exchange-rates-panel:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 8px rgba(0, 0, 0, 0.3);
+}
+
+.exchange-rates-content {
+    text-align: right;
+}
+
+.rates-container {
+    margin: 10px 0;
+}
+
+.rate-item {
+    margin: 5px 0;
+    font-size: 0.9rem;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.rate-item .currency {
+    color: #2c3e50;
+    margin-right: 10px;
+    font-weight: 600;
+}
+
+.rate-item .value {
+    font-weight: bold;
+    color: #1cc88a;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+.update-time {
+    font-size: 0.7rem;
+    color: #5a5c69;
+    margin-top: 5px;
+    font-weight: 500;
+}
+
+/* 添加背景切换按钮 */
+.bg-control {
+    position: fixed;
+    bottom: 70px;
+    right: 20px;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 8px 12px;
+    border-radius: 20px;
+    z-index: 1000;
+    display: flex;
+    gap: 10px;
+    backdrop-filter: blur(5px);
+    border: none;
+    box-shadow: none;
+    transition: all 0.3s ease;
+}
+
+.bg-control:hover {
+    background: rgba(255, 255, 255, 0.3);
+}
+
+.bg-control button {
+    background: rgba(255, 255, 255, 0.3);
+    border: none;
+    padding: 5px 10px;
+    border-radius: 10px;
+    color: #2c3e50;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-weight: 600;
+    font-size: 0.85rem;
+}
+
+.bg-control button:hover {
+    background: rgba(255, 255, 255, 0.5);
+    transform: translateY(-2px);
+}
+
+/* 确保看板娘显示在最上层 */
+#waifu {
+    z-index: 1001 !important;
+    transition: all .3s ease-in-out;
+    transform-origin: right bottom;
+}
+
+#waifu-tips {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid rgba(224, 186, 140, 0.62);
+    border-radius: 12px;
+    box-shadow: 0 3px 15px 2px rgba(191, 158, 118, 0.2);
+    backdrop-filter: blur(10px);
+}
+
+#waifu-tool {
+    background-color: rgba(255, 255, 255, 0.9) !important;
+    border-radius: 10px;
+    backdrop-filter: blur(10px);
+}
+
+/* 汇率面板标题 */
+.exchange-rates-content h6.text-white {
+    color: #4e73df !important;
+    font-weight: 600;
+    margin-bottom: 8px;
+    text-shadow: 0 1px 2px rgba(0, 0, 0, 0.1);
+}
+
+/* 访问统计面板 */
+.visit-stats {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    padding: 12px 20px;
+    border-radius: 15px;
+    z-index: 1000;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
+    transition: all 0.3s ease;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    display: flex;
+    gap: 20px;
+}
+
+.visit-stats:hover {
+    background: rgba(255, 255, 255, 0.95);
+    transform: translateX(-50%) translateY(-2px);
+}
+
+.visit-stats-content {
+    text-align: center;
+    color: #2c3e50;
+    font-size: 0.85rem;
+    display: flex;
+    gap: 20px;
+}
+
+.visit-count {
+    color: #4e73df;
+    font-weight: bold;
+    margin-left: 5px;
+}
+
+.visit-icon {
+    color: #1cc88a;
+    margin-right: 5px;
+} 
