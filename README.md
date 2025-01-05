@@ -10,7 +10,7 @@
 
 2. 运行一键部署命令：
 ```bash
-rm -f vps_value_calculator_deploy.sh && curl -O https://raw.githubusercontent.com/your-github-username/vps-calculator/main/vps_value_calculator_deploy.sh && chmod +x vps_value_calculator_deploy.sh && ./vps_value_calculator_deploy.sh
+rm -f vps_value_calculator_deploy.sh && curl -O https://raw.githubusercontent.com/lzyq0912/vps-calculator/main/vps_value_calculator_deploy.sh && chmod +x vps_value_calculator_deploy.sh && ./vps_value_calculator_deploy.sh
 ```
 
 3. 根据提示输入你的 API 密钥

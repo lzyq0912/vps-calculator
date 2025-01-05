@@ -47,21 +47,25 @@ while true; do
     fi
 done
 
-# 拉取镜像
-echo "正在拉取Docker镜像..."
+# 拉取最新镜像
+echo "正在拉取最新Docker镜像..."
 if ! docker pull cyclonejoker520/vps-calculator:latest; then
     echo -e "${RED}拉取Docker镜像失败，请检查网络连接${NC}"
     exit 1
 fi
 
-# 停止并删除已存在的容器
+# 停止并删除旧容器（如果存在）
 if docker ps -a | grep -q vps-calculator; then
     echo "检测到已存在的容器，正在停止并删除..."
     docker stop vps-calculator >/dev/null 2>&1
     docker rm vps-calculator >/dev/null 2>&1
 fi
 
-# 启动容器
+# 清理未使用的镜像
+echo "清理旧版本镜像..."
+docker image prune -f >/dev/null 2>&1
+
+# 启动新容器
 echo "正在启动服务..."
 if ! docker run -d \
     --name vps-calculator \

@@ -1,13 +1,14 @@
 // 背景图片API列表
 const bgApis = [
-    'https://api.ixiaowai.cn/api/api.php',      // 二次元动漫壁纸
-    'https://api.mtyqx.cn/tapi/random.php',     // 随机动漫壁纸
-    'https://www.dmoe.cc/random.php',           // 二次元随机壁纸
-    'https://api.vvhan.com/api/acgimg',         // 动漫壁纸
-    'https://api.yimian.xyz/img?type=moe'       // 二次元图片
+    'https://api.yimian.xyz/img?type=moe',  // 国内外都能访问
+    'https://pic.re/images',                 // 国际CDN
+    'https://api.waifu.pics/sfw/waifu',      // 国际CDN
+    'https://api.waifu.im/random/?selected_tags=waifu',  // 国际CDN
+    'https://api.lolicon.app/setu/v2?size=original&r18=0' // 国内外都可访问
 ];
 
 let currentBgIndex = 0;
+let nextImageUrl = null;  // 存储预加载的下一张图片URL
 
 // 获取图片URL（处理直接返回图片和返回JSON的情况）
 async function getImageUrl(apiUrl) {
@@ -19,10 +20,12 @@ async function getImageUrl(apiUrl) {
             return apiUrl;
         } else if (contentType.includes('application/json')) {
             const data = await response.json();
-            // 根据不同API的JSON结构返回实际图片URL
+            // 根据不同API的返回格式处理
             if (data.imgurl) return data.imgurl;
             if (data.url) return data.url;
-            if (data.pic) return data.pic;
+            if (data.images?.[0]?.url) return data.images[0].url;
+            if (data.data?.[0]?.urls?.original) return data.data[0].urls.original;
+            if (data.data?.[0]?.url) return data.data[0].url;
             throw new Error('未找到图片URL');
         }
         return apiUrl;
@@ -42,12 +45,35 @@ function preloadImage(url) {
     });
 }
 
+// 预加载下一张图片
+async function preloadNextImage() {
+    try {
+        const nextIndex = (currentBgIndex + 1) % bgApis.length;
+        const imageUrl = await getImageUrl(bgApis[nextIndex]);
+        await preloadImage(imageUrl);
+        nextImageUrl = imageUrl;
+        console.log('下一张图片预加载完成');
+    } catch (error) {
+        console.error('预加载下一张图片失败:', error);
+        nextImageUrl = null;
+    }
+}
+
 // 更换背景图片
 async function changeBackground() {
     try {
-        // 获取并预加载图片
-        const imageUrl = await getImageUrl(bgApis[currentBgIndex]);
-        await preloadImage(imageUrl);
+        let imageUrl;
+        
+        // 使用预加载的图片或重新加载
+        if (nextImageUrl) {
+            imageUrl = nextImageUrl;
+            nextImageUrl = null;
+            // 立即开始预加载下一张
+            preloadNextImage();
+        } else {
+            imageUrl = await getImageUrl(bgApis[currentBgIndex]);
+            await preloadImage(imageUrl);
+        }
         
         const wrapper = document.querySelector('.background-wrapper') || (() => {
             const wrap = document.createElement('div');
@@ -89,6 +115,7 @@ async function changeBackground() {
     } catch (error) {
         console.error('背景加载失败，尝试下一个', error);
         currentBgIndex = (currentBgIndex + 1) % bgApis.length;
+        nextImageUrl = null;  // 清除可能失败的预加载图片
         changeBackground();
     }
 }
@@ -110,6 +137,9 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // 初始加载背景
     changeBackground();
+    
+    // 开始预加载下一张图片
+    preloadNextImage();
     
     // 每30秒自动切换一次背景
     setInterval(changeBackground, 30000);
