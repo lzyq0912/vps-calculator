@@ -79,6 +79,7 @@ def calculate_value():
         total_days = {
             'monthly': 30,
             'quarterly': 90,  # 季付
+            'semiannually': 180,  # 半年付
             'yearly': 365,
             'threeYears': 1095  # 三年付
         }[data['paymentType']]

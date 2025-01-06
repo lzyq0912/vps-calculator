@@ -34,6 +34,26 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // 页面加载时获取汇率
     updateExchangeRates();
+
+    // 移动端透明度控制显示逻辑
+    if (window.innerWidth <= 768) {
+        let lastScrollTop = 0;
+        const opacityControl = document.querySelector('.opacity-control');
+        
+        window.addEventListener('scroll', function() {
+            const st = window.pageYOffset || document.documentElement.scrollTop;
+            const isScrollingDown = st > lastScrollTop;
+            const isNearBottom = (window.innerHeight + st) >= document.documentElement.offsetHeight - 100;
+            
+            if (isScrollingDown || isNearBottom) {
+                opacityControl.classList.add('hidden');
+            } else {
+                opacityControl.classList.remove('hidden');
+            }
+            
+            lastScrollTop = st <= 0 ? 0 : st;
+        }, false);
+    }
 });
 
 function displayResult(result) {
@@ -74,5 +94,8 @@ function displayResult(result) {
 // 透明度控制
 document.getElementById('opacityControl').addEventListener('input', function(e) {
     const opacity = e.target.value / 100;
-    document.querySelector('.card').style.backgroundColor = `rgba(255, 255, 255, ${opacity})`;
+    const cards = document.querySelectorAll('.card');
+    cards.forEach(card => {
+        card.style.backgroundColor = `rgba(255, 255, 255, ${opacity})`;
+    });
 }); 
